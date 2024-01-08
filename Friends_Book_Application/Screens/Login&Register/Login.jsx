@@ -11,7 +11,7 @@ import {useNavigation} from '@react-navigation/native';
 import styles from './style';
 import Feather from 'react-native-vector-icons/Feather';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
-import {useState} from 'react';
+import {useEffect, useState} from 'react';
 import {log} from 'react-native-reanimated';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -27,17 +27,27 @@ function LoginPage({props}) {
       email: email,
       password,
     };
-    
+
     axios.post('http://192.168.1.30:5001/login-user', userData).then(res => {
       console.log(res.data);
       if (res.data.status == 'ok') {
         Alert.alert('Logged In Successfull');
         AsyncStorage.setItem('token', res.data.data);
+        AsyncStorage.setItem('isLoggedIn', JSON.stringify(true));
         navigation.navigate('Home');
       }
     });
   }
-
+  async function getData() {
+    const data = await AsyncStorage.getItem('isLoggedIn');
+    
+    console.log(data, 'at app.jsx');
+  
+  }
+  useEffect(()=>{
+    getData();
+    console.log("Hii");
+  },[])
 
   return (
     <ScrollView

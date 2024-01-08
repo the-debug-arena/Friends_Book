@@ -12,9 +12,10 @@ import {createDrawerNavigator} from '@react-navigation/drawer';
 import Icon from 'react-native-vector-icons/Entypo';
 import DrawerContent from './DrawerContent';
 import SplashScreen from 'react-native-splash-screen';
-import {useEffect} from 'react';
+import {useEffect, useState} from 'react';
 import LoginPage from './Screens/Login&Register/Login';
 import RegisterPage from './Screens/Login&Register/Register';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const StackNav = () => {
   const Stack = createNativeStackNavigator();
@@ -23,7 +24,7 @@ const StackNav = () => {
     <Stack.Navigator
       screenOptions={{
         statusBarColor: '#0163d2',
-        headerShown:false,
+        headerShown: false,
         headerStyle: {
           backgroundColor: '#0163d2',
         },
@@ -33,18 +34,20 @@ const StackNav = () => {
       <Stack.Screen
         name="Home"
         component={HomeScreen}
-        options={{
-          // headerLeft: () => {
-          //   return (
-          //     <Icon
-          //       name="menu"
-          //       onPress={() => navigation.dispatch(DrawerActions.openDrawer())}
-          //       size={30}
-          //       color="#fff"
-          //     />
-          //   );
-          // },
-        }}
+        options={
+          {
+            // headerLeft: () => {
+            //   return (
+            //     <Icon
+            //       name="menu"
+            //       onPress={() => navigation.dispatch(DrawerActions.openDrawer())}
+            //       size={30}
+            //       color="#fff"
+            //     />
+            //   );
+            // },
+          }
+        }
       />
       <Stack.Screen name="Profile" component={ProfileScreen} />
       <Stack.Screen
@@ -54,6 +57,8 @@ const StackNav = () => {
           headerShown: true,
         }}
       />
+      <Stack.Screen name="LoginUser" component={LoginNav}/>
+    
     </Stack.Navigator>
   );
 };
@@ -70,24 +75,38 @@ const DrawerNav = () => {
     </Drawer.Navigator>
   );
 };
+
+const LoginNav = () => {
+  const Stack = createNativeStackNavigator();
+  return (
+    <Stack.Navigator
+      screenOptions={{
+        headerShown: false,
+      }}>
+      <Stack.Screen name="Login" component={LoginPage} />
+      <Stack.Screen name="Register" component={RegisterPage} />
+      <Stack.Screen name="Home" component={DrawerNav} />
+    </Stack.Navigator>
+  );
+};
 function App() {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  async function getData() {
+    const data = await AsyncStorage.getItem('isLoggedIn');
+    console.log(data, 'at app.jsx');
+    setIsLoggedIn(data);
+  }
+
   useEffect(() => {
+    getData();
     setTimeout(() => {
       SplashScreen.hide();
     }, 900);
-  }, []);
-  const Stack = createNativeStackNavigator();
+  }, [isLoggedIn]);
 
   return (
     <NavigationContainer>
-      <Stack.Navigator
-        screenOptions={{
-          headerShown: false,
-        }}>
-        <Stack.Screen name="Login" component={LoginPage} />
-        <Stack.Screen name="Register" component={RegisterPage} />
-        <Stack.Screen name="Home" component={DrawerNav}/>
-      </Stack.Navigator>
+      {isLoggedIn ? <DrawerNav /> : <LoginNav />}
     </NavigationContainer>
   );
 }

@@ -5,6 +5,7 @@ import {Avatar, Title} from 'react-native-paper';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import {useNavigation} from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const DrawerList = [
   {icon: 'home-outline', label: 'Home', navigateTo: 'Home'},
@@ -27,18 +28,25 @@ const DrawerLayout = ({icon, label, navigateTo}) => {
 };
 
 const DrawerItems = props => {
-    return DrawerList.map((el, i) => {
-      return (
-        <DrawerLayout
-          key={i}
-          icon={el.icon}
-          label={el.label}
-          navigateTo={el.navigateTo}
-        />
-      );
-    });
-  };
+  return DrawerList.map((el, i) => {
+    return (
+      <DrawerLayout
+        key={i}
+        icon={el.icon}
+        label={el.label}
+        navigateTo={el.navigateTo}
+      />
+    );
+  });
+};
 function DrawerContent(props) {
+  const navigation = useNavigation();
+function signOut(){
+  AsyncStorage.setItem('isLoggedIn','');
+  AsyncStorage.setItem('token','');
+  navigation.navigate("LoginUser")
+
+}
   return (
     <View style={{flex: 1}}>
       <DrawerContentScrollView {...props}>
@@ -69,6 +77,7 @@ function DrawerContent(props) {
       </DrawerContentScrollView>
       <View style={styles.bottomDrawerSection}>
         <DrawerItem
+         onPress={()=>signOut()}
           icon={({color, size}) => (
             <Icon name="exit-to-app" color={color} size={size} />
           )}
