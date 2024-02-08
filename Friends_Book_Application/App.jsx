@@ -16,6 +16,61 @@ import {useEffect, useState} from 'react';
 import LoginPage from './Screens/Login&Register/Login';
 import RegisterPage from './Screens/Login&Register/Register';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import Toast, { BaseToast, ErrorToast } from 'react-native-toast-message';
+import UpdateProfile from './Screens/UpdateProfile/UpdateProfile';
+
+
+const toastConfig = {
+ 
+  success: (props) => (
+    <BaseToast
+      {...props}
+      style={{
+        borderLeftColor: 'green',
+        borderLeftWidth: 7,
+        width: '90%',
+        height: 70,
+        borderRightColor: 'green',
+        borderRightWidth: 7,
+      }}
+      contentContainerStyle={{paddingHorizontal: 15}}
+      text1Style={{
+        fontSize: 17,
+        fontWeight: '700',
+      }}
+      text2Style={{
+        fontSize: 14,
+      }}
+    />
+  ),
+  /*
+    Overwrite 'error' type,
+    by modifying the existing `ErrorToast` component
+  */
+  error: (props) => (
+    <ErrorToast
+      {...props}
+      text2NumberOfLines={3}
+      style={{
+        borderLeftColor: 'red',
+        borderLeftWidth: 7,
+        width: '90%',
+        height: 70,
+        borderRightColor: 'red',
+        borderRightWidth: 7,
+      }}
+      contentContainerStyle={{paddingHorizontal: 15}}
+      text1Style={{
+        fontSize: 17,
+        fontWeight: '700',
+      }}
+      text2Style={{
+        fontSize: 14,
+      }}
+    />
+  ),
+  
+};
 
 const StackNav = () => {
   const Stack = createNativeStackNavigator();
@@ -55,6 +110,13 @@ const StackNav = () => {
         component={UserScreen}
         options={{
           headerShown: true,
+        }}
+      />
+       <Stack.Screen
+        name="UpdateProfile"
+        component={UpdateProfile}
+        options={{
+          headerShown: false,
         }}
       />
       <Stack.Screen name="LoginUser" component={LoginNav}/>
@@ -107,6 +169,7 @@ function App() {
   return (
     <NavigationContainer>
       {isLoggedIn ? <DrawerNav /> : <LoginNav />}
+      <Toast config={toastConfig}/>
     </NavigationContainer>
   );
 }

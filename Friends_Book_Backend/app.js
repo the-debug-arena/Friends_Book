@@ -51,6 +51,7 @@ app.post("/register", async (req, res) => {
 
 app.post("/login-user", async (req, res) => {
   const { email, password } = req.body;
+  console.log(req.body);
   const oldUser = await User.findOne({ email: email });
 
   if (!oldUser) {
@@ -59,7 +60,7 @@ app.post("/login-user", async (req, res) => {
 
   if (await bcrypt.compare(password, oldUser.password)) {
     const token = jwt.sign({ email: oldUser.email }, JWT_SECRET);
-
+    console.log(token);
     if (res.status(201)) {
       return res.send({ status: "ok", data: token });
     } else {
@@ -77,6 +78,28 @@ app.post("/userdata", async (req, res) => {
     User.findOne({ email: useremail }).then((data) => {
       return res.send({ status: "Ok", data: data });
     });
+  } catch (error) {
+    return res.send({ error: error });
+  }
+});
+
+app.post("/update-user", async (req, res) => {
+  const { name, email, mobile, image, gender, profession } = req.body;
+  console.log(req.body);
+  try {
+    await User.updateOne(
+      { email: email },
+      {
+        $set: {
+          name,
+          mobile,
+          image,
+          gender,
+          profession,
+        },
+      }
+    );
+    res.send({status:"Ok",data:"Updated"})
   } catch (error) {
     return res.send({ error: error });
   }

@@ -15,6 +15,7 @@ import Fontisto from 'react-native-vector-icons/Fontisto';
 import Error from 'react-native-vector-icons/MaterialIcons';
 import {useState} from 'react';
 import axios from 'axios';
+import Toast from 'react-native-toast-message';
 
 function RegisterPage({props}) {
   const [name, setName] = useState('');
@@ -50,6 +51,12 @@ function RegisterPage({props}) {
         .catch(e => console.log(e));
     } else {
       Alert.alert('Fill mandatory details');
+      // Toast.show({
+      //   type:'error',
+      //   text1:'Error!!',
+      //   text2:'Fill mandatory details',
+      //   visibilityTime:5000
+      // })
     }
   }
 

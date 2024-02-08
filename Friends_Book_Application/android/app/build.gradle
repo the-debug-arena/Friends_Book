@@ -78,6 +78,7 @@ android {
     defaultConfig {
         applicationId "com.friends_book"
         minSdkVersion rootProject.ext.minSdkVersion
+        // ectorDrawables.useSupportLibrary = true
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
         versionName "1.0"
