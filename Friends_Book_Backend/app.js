@@ -26,7 +26,7 @@ app.get("/", (req, res) => {
 });
 
 app.post("/register", async (req, res) => {
-  const { name, email, mobile, password } = req.body;
+  const { name, email, mobile, password, userType } = req.body;
   console.log(req.body);
 
   const oldUser = await User.findOne({ email: email });
@@ -42,6 +42,7 @@ app.post("/register", async (req, res) => {
       email: email,
       mobile,
       password: encryptedPassword,
+      userType,
     });
     res.send({ status: "ok", data: "User Created" });
   } catch (error) {
@@ -62,7 +63,11 @@ app.post("/login-user", async (req, res) => {
     const token = jwt.sign({ email: oldUser.email }, JWT_SECRET);
     console.log(token);
     if (res.status(201)) {
-      return res.send({ status: "ok", data: token });
+      return res.send({
+        status: "ok",
+        data: token,
+        userType: oldUser.userType,
+      });
     } else {
       return res.send({ error: "error" });
     }
@@ -99,7 +104,7 @@ app.post("/update-user", async (req, res) => {
         },
       }
     );
-    res.send({status:"Ok",data:"Updated"})
+    res.send({ status: "Ok", data: "Updated" });
   } catch (error) {
     return res.send({ error: error });
   }

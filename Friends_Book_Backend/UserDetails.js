@@ -8,7 +8,8 @@ const UserDetailSchema = new mongoose.Schema(
     password: String,
     image:String,
     gender:String,
-    profession:String
+    profession:String,
+    userType:String
     
   
   },

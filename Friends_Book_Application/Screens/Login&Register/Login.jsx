@@ -34,7 +34,14 @@ function LoginPage({props}) {
         Alert.alert('Logged In Successfull');
         AsyncStorage.setItem('token', res.data.data);
         AsyncStorage.setItem('isLoggedIn', JSON.stringify(true));
-        navigation.navigate('Home');
+        AsyncStorage.setItem('userType',res.data.userType)
+        // navigation.navigate('Home');
+        if(res.data.userType=="Admin"){
+           navigation.navigate('AdminScreen');
+        }else{
+          navigation.navigate('Home');
+        }
+      
       }
     });
   }

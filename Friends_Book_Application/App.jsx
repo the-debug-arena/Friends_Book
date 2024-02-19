@@ -16,13 +16,12 @@ import {useEffect, useState} from 'react';
 import LoginPage from './Screens/Login&Register/Login';
 import RegisterPage from './Screens/Login&Register/Register';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import Toast, { BaseToast, ErrorToast } from 'react-native-toast-message';
+import Toast, {BaseToast, ErrorToast} from 'react-native-toast-message';
 import UpdateProfile from './Screens/UpdateProfile/UpdateProfile';
-
+import AdminScreen from './Screens/AdminScreen';
 
 const toastConfig = {
- 
-  success: (props) => (
+  success: props => (
     <BaseToast
       {...props}
       style={{
@@ -47,7 +46,7 @@ const toastConfig = {
     Overwrite 'error' type,
     by modifying the existing `ErrorToast` component
   */
-  error: (props) => (
+  error: props => (
     <ErrorToast
       {...props}
       text2NumberOfLines={3}
@@ -69,7 +68,6 @@ const toastConfig = {
       }}
     />
   ),
-  
 };
 
 const StackNav = () => {
@@ -112,15 +110,14 @@ const StackNav = () => {
           headerShown: true,
         }}
       />
-       <Stack.Screen
+      <Stack.Screen
         name="UpdateProfile"
         component={UpdateProfile}
         options={{
           headerShown: false,
         }}
       />
-      <Stack.Screen name="LoginUser" component={LoginNav}/>
-    
+      <Stack.Screen name="LoginUser" component={LoginNav} />
     </Stack.Navigator>
   );
 };
@@ -148,15 +145,19 @@ const LoginNav = () => {
       <Stack.Screen name="Login" component={LoginPage} />
       <Stack.Screen name="Register" component={RegisterPage} />
       <Stack.Screen name="Home" component={DrawerNav} />
+      <Stack.Screen name="AdminScreen" component={AdminScreen} />
     </Stack.Navigator>
   );
 };
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [userType, setuserType] = useState(false);
   async function getData() {
     const data = await AsyncStorage.getItem('isLoggedIn');
+    const userType1 = await AsyncStorage.getItem('userType');
     console.log(data, 'at app.jsx');
     setIsLoggedIn(data);
+    setuserType(userType1);
   }
 
   useEffect(() => {
@@ -168,8 +169,14 @@ function App() {
 
   return (
     <NavigationContainer>
-      {isLoggedIn ? <DrawerNav /> : <LoginNav />}
-      <Toast config={toastConfig}/>
+      {isLoggedIn && userType == 'Admin' ? (
+        <AdminScreen />
+      ) : isLoggedIn ? (
+        <DrawerNav />
+      ) : (
+        <LoginNav />
+      )}
+      <Toast config={toastConfig} />
     </NavigationContainer>
   );
 }

@@ -16,6 +16,7 @@ import Error from 'react-native-vector-icons/MaterialIcons';
 import {useState} from 'react';
 import axios from 'axios';
 import Toast from 'react-native-toast-message';
+import {RadioButton} from 'react-native-paper';
 
 function RegisterPage({props}) {
   const [name, setName] = useState('');
@@ -27,6 +28,8 @@ function RegisterPage({props}) {
   const [password, setPassword] = useState('');
   const [passwordVerify, setPasswordVerify] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [userType, setUserType] = useState('');
+  const [secretText, setSecretText] = useState('');
 
   const navigation = useNavigation();
   function handelSubmit() {
@@ -35,8 +38,12 @@ function RegisterPage({props}) {
       email,
       mobile,
       password,
+      userType
     };
-    if (nameVerify && emailVerify && passwordVerify && mobileVerify) {
+    // if (nameVerify && emailVerify && passwordVerify && mobileVerify) {
+      if (userType == 'Admin' && secretText != 'Text1243') {
+        return Alert.alert('Invalid Admin');
+      }
       axios
         .post('http://192.168.1.30:5001/register', userData)
         .then(res => {
@@ -49,15 +56,15 @@ function RegisterPage({props}) {
           }
         })
         .catch(e => console.log(e));
-    } else {
-      Alert.alert('Fill mandatory details');
+    // } else {
+      // Alert.alert('Fill mandatory details');
       // Toast.show({
-      //   type:'error',
-      //   text1:'Error!!',
-      //   text2:'Fill mandatory details',
-      //   visibilityTime:5000
-      // })
-    }
+      //   type: 'error',
+      //   text1: 'Error!!',
+      //   text2: 'Fill mandatory details',
+      //   visibilityTime: 5000,
+      // });
+    // }
   }
 
   function handleName(e) {
@@ -111,6 +118,44 @@ function RegisterPage({props}) {
         </View>
         <View style={styles.loginContainer}>
           <Text style={styles.text_header}>Register!!!</Text>
+
+          <View style={styles.radioButton_div}>
+            <Text style={styles.radioButton_title}> Login as</Text>
+            <View style={styles.radioButton_inner_div}>
+              <Text style={styles.radioButton_text}>User</Text>
+              <RadioButton
+                value="User"
+                status={userType == 'User' ? 'checked' : 'unchecked'}
+                onPress={() => setUserType('User')}
+              />
+            </View>
+            <View style={styles.radioButton_inner_div}>
+              <Text style={styles.radioButton_text}>Admin</Text>
+              <RadioButton
+                value="Admin"
+                status={userType == 'Admin' ? 'checked' : 'unchecked'}
+                onPress={() => setUserType('Admin')}
+              />
+            </View>
+          </View>
+
+          {userType == 'Admin' ? (
+            <View style={styles.action}>
+              <FontAwesome
+                name="user-o"
+                color="#420475"
+                style={styles.smallIcon}
+              />
+              <TextInput
+                placeholder="Secret Text"
+                style={styles.textInput}
+                onChange={e => setSecretText(e.nativeEvent.text)}
+              />
+            </View>
+          ) : (
+            ''
+          )}
+
           <View style={styles.action}>
             <FontAwesome
               name="user-o"
