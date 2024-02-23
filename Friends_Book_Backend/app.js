@@ -110,6 +110,15 @@ app.post("/update-user", async (req, res) => {
   }
 });
 
+app.get("/get-all-user", async (req, res) => {
+  try {
+    const data = await User.find({});
+    res.send({ status: "Ok", data: data });
+  } catch (error) {
+    return res.send({ error: error });
+  }
+});
+
 app.listen(5001, () => {
   console.log("Node js server started.");
 });

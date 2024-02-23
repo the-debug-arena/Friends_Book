@@ -145,7 +145,36 @@ const LoginNav = () => {
       <Stack.Screen name="Login" component={LoginPage} />
       <Stack.Screen name="Register" component={RegisterPage} />
       <Stack.Screen name="Home" component={DrawerNav} />
-      <Stack.Screen name="AdminScreen" component={AdminScreen} />
+      <Stack.Screen name="AdminScreen" component={AdminStack} />
+    </Stack.Navigator>
+  );
+};
+
+const AdminStack = () => {
+  const Stack = createNativeStackNavigator();
+  return (
+    <Stack.Navigator>
+      <Stack.Screen
+        options={{
+          statusBarColor: '#0163d2',
+          headerShown: true,
+          headerBackVisible:false,
+          headerStyle: {
+            backgroundColor: '#0163d2',
+          },
+          headerTintColor: '#fff',
+          headerTitleAlign: 'center',
+        }}
+        name="AdminScreen"
+        component={AdminScreen}
+      />
+      <Stack.Screen
+        options={{
+          headerShown: false,
+        }}
+        name="Login"
+        component={LoginNav}
+      />
     </Stack.Navigator>
   );
 };
@@ -170,7 +199,7 @@ function App() {
   return (
     <NavigationContainer>
       {isLoggedIn && userType == 'Admin' ? (
-        <AdminScreen />
+        <AdminStack/>
       ) : isLoggedIn ? (
         <DrawerNav />
       ) : (
