@@ -119,6 +119,19 @@ app.get("/get-all-user", async (req, res) => {
   }
 });
 
+app.post("/delete-user",async (req, res) => {
+ const {id}=req.body;
+ try {
+  await User.deleteOne({_id:id});
+  res.send({status:"Ok",data:"User Deleted"});
+ } catch (error) {
+  return res.send({ error: error });
+  
+ }
+})
+
+
+
 app.listen(5001, () => {
   console.log("Node js server started.");
 });
